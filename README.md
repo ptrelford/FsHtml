@@ -1,5 +1,5 @@
 # FsHtml
-F# based HTML DSL [![Build Status](https://travis-ci.org/ptrelford/FsHtml.png?branch=master)](https://travis-ci.org/ptrelford/FsHtml/)
+F# based HTML DSL
 
 ## Building
 
