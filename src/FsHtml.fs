@@ -18,9 +18,12 @@ type Html =
             let attrs =         
                if attrs = [] then ""
                else " " + String.concat " " [for attr in attrs -> toString 0 attr]
-            spaces+"<"+tag+attrs+">\r\n"+
-               String.concat "" [for e in elems -> toString (indent+1) e] +
-                  spaces+"</"+tag+">\r\n"
+            match elems with
+            | [] -> spaces+"<"+tag+attrs+"/>\r\n"
+            | _ ->
+               spaces+"<"+tag+attrs+">\r\n"+
+                  String.concat "" [for e in elems -> toString (indent+1) e] +
+                     spaces+"</"+tag+">\r\n"
          | Text(text) ->            
             spaces + text + "\r\n"
       toString 0 elem
@@ -37,6 +40,8 @@ let thead = elem "thead"
 let tbody = elem "tbody"
 let tfoot = elem "tfoot"
 let img = elem "img"
+let map = elem "map"
+let area = elem "area"
 let a = elem "a"
 let tr = elem "tr"
 let td = elem "td"
