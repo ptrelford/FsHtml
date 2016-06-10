@@ -4,6 +4,7 @@ type Html =
    | Elem of string * Html list
    | Attr of string * string
    | Text of string
+   | Spread of Html list
    with
    static member toString elem =
       let rec toString indent elem =
@@ -26,6 +27,9 @@ type Html =
                      spaces+"</"+tag+">\r\n"
          | Text(text) ->            
             spaces + text + "\r\n"
+         | Spread list ->
+            List.fold (fun acc v -> acc + (toString indent v)) "" list
+
       toString 0 elem
    override this.ToString() = Html.toString this
 
