@@ -5,28 +5,31 @@ type Html =
    | Attr of string * string
    | Text of string
    with
-   static member toString elem =
-      let rec toString indent elem =
-         let spaces = String.replicate indent " "
-         match elem with
-         | Attr(name,value) -> name+"=\""+value+"\""
-         | Elem(tag, [Text s]) ->
-            spaces+"<"+tag+">"+s+"</"+tag+">\r\n"
-         | Elem(tag, content) ->
-            let isAttr = function Attr _ -> true | _ -> false
-            let attrs, elems = content |> List.partition isAttr
-            let attrs =         
-               if attrs = [] then ""
-               else " " + String.concat " " [for attr in attrs -> toString 0 attr]
-            match elems with
-            | [] -> spaces+"<"+tag+attrs+"/>\r\n"
-            | _ ->
-               spaces+"<"+tag+attrs+">\r\n"+
-                  String.concat "" [for e in elems -> toString (indent+1) e] +
-                     spaces+"</"+tag+">\r\n"
-         | Text(text) ->            
-            spaces + text + "\r\n"
-      toString 0 elem
+      static member ToString prettyPrint elem =
+         let newLine = if prettyPrint then "\n" else ""
+         let rec toString indent elem =
+            let indent = if prettyPrint then indent else 0
+            let spaces = String.replicate indent " "
+            match elem with
+            | Attr(name,value) -> name+"=\""+value+"\""
+            | Elem(tag, [Text s]) ->
+               spaces+"<"+tag+">"+s+"</"+tag+">"+newLine
+            | Elem(tag, content) ->
+               let isAttr = function Attr _ -> true | _ -> false
+               let attrs, elems = content |> List.partition isAttr
+               let attrs =         
+                  if List.isEmpty attrs then ""
+                  else " " + String.concat " " [for attr in attrs -> toString 0 attr]
+               match elems with
+               | [] -> spaces+"<"+tag+attrs+"/>"+newLine
+               | _ ->
+                  spaces+"<"+tag+attrs+">"+newLine+
+                     String.concat "" [for e in elems -> toString (indent+1) e] +
+                        spaces+"</"+tag+">"+newLine
+            | Text(text) ->            
+               spaces + text + newLine
+         toString 0 elem
+
    override this.ToString() = Html.toString this
 
 let elem tag content = Elem(tag,content)
