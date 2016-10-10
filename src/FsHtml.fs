@@ -54,9 +54,9 @@ let th = elem "th"
 let ul = elem "ul"
 let li = elem "li"
 let h1 = elem "h1"
-let h2 = elem "h1"
-let h3 = elem "h1"
-let h4 = elem "h1"
+let h2 = elem "h2"
+let h3 = elem "h3"
+let h4 = elem "h4"
 let strong = elem "strong"
 let (~%) s = [Text(s.ToString())]
 let (%=) name value = Attr(name,value)
