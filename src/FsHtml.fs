@@ -3,6 +3,7 @@
 type Html =
    | Elem of string * Html list
    | Attr of string * string
+   | SingleAttr of string
    | Text of string
    with
    static member toString elem =
@@ -10,10 +11,11 @@ type Html =
          let spaces = String.replicate indent " "
          match elem with
          | Attr(name,value) -> name+"=\""+value+"\""
+         | SingleAttr(name) -> name
          | Elem(tag, [Text s]) ->
             spaces+"<"+tag+">"+s+"</"+tag+">\r\n"
          | Elem(tag, content) ->
-            let isAttr = function Attr _ -> true | _ -> false
+            let isAttr = function Attr _ | SingleAttr _ -> true | _ -> false
             let attrs, elems = content |> List.partition isAttr
             let attrs =         
                if attrs = [] then ""
@@ -26,7 +28,7 @@ type Html =
                      spaces+"</"+tag+">\r\n"
          | Text(text) ->            
             spaces + text + "\r\n"
-      toString 0 elem
+      "<!DOCTYPE html>\r\n" + toString 0 elem
    override this.ToString() = Html.toString this
 
 let elem tag content = Elem(tag,content)
@@ -58,5 +60,6 @@ let h2 = elem "h1"
 let h3 = elem "h1"
 let h4 = elem "h1"
 let strong = elem "strong"
+let single attr = SingleAttr attr
 let (~%) s = [Text(s.ToString())]
 let (%=) name value = Attr(name,value)
